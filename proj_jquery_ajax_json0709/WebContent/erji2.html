@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+<script type="text/javascript">
+//页面加载就发起异步请求，请求prov.do->查询所有省份
+   $(function(){
+	   //加载所有的省份
+	   loadsProv();
+	   //页面一加载就给省份绑定改变事件
+	   //给城市添加值
+	   $("#prov").change(function(){
+		   loadsCity();
+		   
+	   });
+	 
+   });
+   
+   function loadsProv(){
+	   
+	   alert("11");
+	   
+	   //发起异步请求
+	   $.getJSON("prov.do", function(provs){
+		     // alert(provs[0].prov_id);
+		     var content = null;
+			      $.each(provs, function(i,prov){
+			       // alert(prov.prov_id);
+			       content+="<option value='"+prov.prov_id+"'>"+prov.prov_name+"</option>";
+			      
+			     }); 
+			      
+			      $("#prov").html(content);
+	});
+   }
+   
+   
+   function  loadsCity(){
+	   $("#city").html("");
+	   var content = null;
+	   $.getJSON("city.do?prov_id="+$("#prov").val(), function(citys){
+			     $.each(citys, function(i,city){
+			      content+="<option value='"+city.city_id+"'>"+city.city_name+"</option>";
+			     });
+			     $("#city").html(content);
+			   });
+	   
+   }
+  
+ 
+</script>
+</head>
+<body>
+   <select id="prov">
+     
+   </select>省
+   <select id="city"></select>市
+</body>
+</html>

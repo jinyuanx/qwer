@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+<script type="text/javascript">
+    $(function(){
+    	
+    	 /*   $.ajax({
+    		  type: "GET",
+    		  url: "js/demo.js",
+    		  dataType: "script"
+    		}); */
+    		
+    		
+    		$.ajax({
+    			type:"post" ,//提交方式
+    			url:"user.do",//请求的地址
+    			dataType:"json",//html/xml/text后台给前台传送值的类型
+    			data:"id=sx001&name=admin",//前台给后台传送的值
+    			cache:false,//不缓存
+    			async:true,//异步请求
+    			success:function(msg){	
+    				  alert( "Data Saved: " + msg );
+
+    			},
+    			error:function(msg){	 
+    				  alert( "Data Saved: " + msg );
+
+    			 }
+    			
+    		});
+    	
+    });
+</script>
+</head>
+<body >
+
+</body>
+</html>

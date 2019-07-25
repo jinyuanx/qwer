@@ -1,0 +1,204 @@
+package com.it.dao;
+
+
+import java.sql.SQLException;
+import java.util.List;
+import org.apache.commons.dbutils.DbUtils;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
+import com.it.bean.Users;
+import com.it.utils.JDBCUtils;
+
+/**
+ * 
+ * 
+ * <p>
+ * Title:
+ * 
+ *
+ * </p>
+ * <p>
+ * Description:com.it.jdbc.UsersDAO.java
+ * </p>
+ * <p>
+ * Copyright: Copyright (c) j2se 8.0
+ * </p>
+ * <p>
+ * date: 2018年8月16日 上午11:45:19
+ * </p>
+ * <p>
+ * Company: gy
+ * </p>
+ * 
+ * @author zxy
+ */
+
+public class UsersDAO {
+	QueryRunner queryRunner = new QueryRunner(JDBCUtils.getDataSource());
+	// 增
+
+	public boolean addUsers(Users users) {
+		// 1 编写sql
+		String sql = "insert into users(user_name,user_age,user_weight)values(?,?,?)";
+		// 2 打印sql
+		System.out.println("sql-->" + sql);
+		// 3 处理参数
+		Object params[] = { users.getUser_name(), users.getUser_age(), users.getUser_weight() };
+		// 定义标志位
+
+		try {
+			int rows = queryRunner.update(sql, params);
+			return rows > 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			throw new RuntimeException("添加失败!!");
+		} finally {
+			// 释放资源到数据库连接池
+			try {
+				DbUtils.close(JDBCUtils.getConnections());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				throw new RuntimeException("关闭资源失败!");
+			}
+		}
+	}
+
+	// 删
+	public boolean delUsers(Users users) {
+		// 1 编写sql
+				String sql = "delete from users where user_id=?";
+				// 2 打印sql
+				System.out.println("sql-->" + sql);
+				// 3 处理参数
+				Object params[] = { users.getUser_id() };
+				// 定义标志位
+
+				try {
+					int rows = queryRunner.update(sql, params);
+					return rows > 0;
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+
+					throw new RuntimeException("删除失败!!");
+				} finally {
+					// 释放资源到数据库连接池
+					try {
+						DbUtils.close(JDBCUtils.getConnections());
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						throw new RuntimeException("关闭资源失败!");
+					}
+				}
+
+	}
+
+	// 改
+	public boolean updUsers(Users users) {
+		// 1 编写sql
+				String sql = "update users set user_name =?,user_age=?,user_weight=? where user_id=?";
+				// 2 打印sql
+				System.out.println("sql-->" + sql);
+				System.out.println(users);
+				// 3 处理参数
+				Object params[] = { users.getUser_name(), users.getUser_age(), users.getUser_weight(),users.getUser_id() };
+				// 定义标志位
+
+				try {
+					int rows = queryRunner.update(sql, params);
+					return rows > 0;
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+
+					throw new RuntimeException("修改失败!!");
+				} finally {
+					// 释放资源到数据库连接池
+					try {
+						DbUtils.close(JDBCUtils.getConnections());
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						throw new RuntimeException("关闭资源失败!");
+					}
+				}
+	}
+
+	// 查
+	public List<Users> queryAllUsers(Users users) {
+		 //编写sql
+		String sql = "select * from users where 1=1 ";
+		if(users!=null){
+			//判定账户名的文本框的合法性
+			// "" null判定
+			if(!"".equals(users.getUser_name()) && users.getUser_name()!=null) {
+				
+				//拼接sql
+				sql+="and user_name like '%"+users.getUser_name()+"%' ";
+				
+			}
+			
+			if(!"".equals(new Integer(users.getUser_age())) && new Integer(users.getUser_age())!=null) {
+				sql+=" and user_age like '%"+users.getUser_age()+"%'";
+				
+			}
+		}
+		
+		System.out.println("sql-->"+sql);
+		//存放所有Users信息
+		List<Users> listU = null;
+		try {
+			listU = queryRunner.query(sql, new BeanListHandler<>(Users.class));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RuntimeException("查询数据失败!");
+		}
+		finally {
+			//释放资源到数据库连接池
+			try {
+				DbUtils.close(JDBCUtils.getConnections());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				throw new RuntimeException("关闭资源失败!");
+			}
+		}
+		return listU;
+	}
+
+	// 查
+	public Users findUsersById(Users users) {
+		 //编写sql
+		String sql = "select * from users where user_id=?";
+		//2 打印sql
+		 System.out.println("sql-->"+sql);
+		 //3 处理参数
+		 Object params[] = {users.getUser_id()};
+		 
+		 Users users1 = null;
+		 try {
+			users1 =  queryRunner.query(sql, new BeanHandler<Users>(Users.class), params);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("查询单个数据失败!");
+		}
+		finally {
+			//释放资源到数据库连接池
+			try {
+				DbUtils.close(JDBCUtils.getConnections());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				throw new RuntimeException("关闭资源失败!");
+			}
+		}
+		return users1;
+	}
+
+}

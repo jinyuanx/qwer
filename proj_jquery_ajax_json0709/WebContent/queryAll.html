@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+<script type="text/javascript">
+
+   $(function(){
+	  
+	   loadProv();
+	   
+   });
+   
+   function loadProv(){
+	   
+	     $("#tab").empty();
+	   
+	   //发起异步请求查询所有省份
+	   $.getJSON("prov.do", function(provs){
+		   
+		      $.each(provs, function(i,prov){
+                //alert(i+"\t"+prov.prov_id);
+	          $("#tab").append("<tr><td>"+prov.prov_id+"</td>"+
+	                                "<td>"+prov.prov_name+"</td>"+
+	                                "<td><a href =\"#\" onclick=\"delProv('"+prov.prov_id+"')\" id=\"a1\">删除</a></td>"+
+	                                "</tr>");
+	         });
+		 });
+	   
+   }
+   
+   function delProv(prov_id){
+	  
+	    
+	     $.get("prov2.do", { prov_id: prov_id },
+			   function(data){
+	    	    // alert("del");
+			       // alert("Data Loaded: " + data);
+				   loadProv();
+			   });
+	   
+	   
+   }
+   
+</script>
+</head>
+<body>
+
+
+<table id="tab" border="1px" align="center" width="200px">
+
+
+</table>
+
+</body>
+</html>

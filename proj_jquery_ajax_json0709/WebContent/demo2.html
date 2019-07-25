@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+//输入编号，返回该编号的用户所有信息
+//如果不存在该编号，则提示该用户不存在
+  $(function(){
+	  
+	  //alert("11");
+	  //页面已加载给文本框绑定失去焦点事件
+	  $("#user_id").blur(function(){
+		  
+		  getInfo();
+		  
+	  });
+  });
+  
+  //发去异步请求
+  function   getInfo(){
+	   $.ajax({
+		   url:"user.do",
+		   type:"post",
+		   data:"user_id="+$("#user_id").val(),
+		   dataType:"json",
+		   cache:false,
+		   async:true,
+		   success:function(users){
+			   
+			  // alert(users.user_id+","+users.user_name);
+			   
+			  if(users!="1"){
+				  
+				  $("#content").html("users_id-->"+users.user_id
+						  +"<br>users_name-->"+users.user_name
+						  +"<br>users_age-->"+users.user_age
+						  +"<br>users_weight-->"+users.user_weight);
+			  }else{
+				  $("#content").html("查无此人!");  
+			  }
+		   } 
+	   });  
+  }
+</script>
+</head>
+<body>
+
+账户名:<input type="text" name="user_id" id="user_id" >
+
+<br>
+<div id="content">
+
+</div>
+
+</body>
+</html>

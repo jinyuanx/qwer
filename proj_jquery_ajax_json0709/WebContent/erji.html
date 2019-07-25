@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+<script type="text/javascript">
+//页面加载就发起异步请求，请求prov.do->查询所有省份
+   $(function(){
+	   
+	   //发起异步请求，请求prov.do->查询所有省份
+	   
+	   loadProv();
+	   
+	   //给省份prov绑定改变事件，发起异步请求，调用该省份下的所有城市
+	      $("#prov").change(function(){
+		   
+		   loadCity();
+		   
+	   });
+   });
+   
+   
+   //请求prov.do->查询所有省份
+   
+   function loadProv(){
+	     
+	   var content="";
+	     $.get("prov.do", function(provs){
+	    	// var provss = JSON.parse(provs)
+	    	//alert(provs);
+	    	 $.each(JSON.parse(provs), function(i,prov) {
+	    		// alert(prov.prov_id);
+	    		content+="<option value='"+prov.prov_id+"'>"+prov.prov_name+"</option>";
+	    	 ;
+	    	}); 
+	    	   // alert(content);
+	          //$("#prov").html(content);
+	          $("#prov").append(content);
+		 });
+	    
+	    
+	 
+   }
+   
+ //请求city.do->查询该省份下的所有城市
+ function loadCity(){
+	   // alert($("#prov").val());
+	      $("#city").empty();
+	     var content="";
+	     $.post("city.do", { prov_id: $("#prov").val()},
+			  function(citys){
+			    
+		  $.each(JSON.parse(citys), function(i,city) {
+	    		// alert(prov.prov_id);
+	    		content+="<option value='"+city.city_id+"'>"+city.city_name+"</option>";
+	    	 ;
+	    	}); 
+		 
+		   alert(content);
+		        $("#city").html(content);
+		           
+			  }); 
+	 
+	 
+	 
+ }
+</script>
+</head>
+<body>
+   <select id="prov">
+     
+   </select>省
+   <select id="city"></select>市
+</body>
+</html>

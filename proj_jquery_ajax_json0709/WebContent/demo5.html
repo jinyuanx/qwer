@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+<script type="text/javascript">
+   $(function(){
+	   
+	  alert("11");
+	  
+	  $("#user_id").blur(function(){
+		  $.getJSON("user.do", { user_id: $("#user_id").val()}, function(users){
+			  if(users!="1"){
+				  
+				  $("#content").html("users_id-->"+users.user_id
+						  +"<br>users_name-->"+users.user_name
+						  +"<br>users_age-->"+users.user_age
+						  +"<br>users_weight-->"+users.user_weight);
+			  }else{
+				  $("#content").html("查无此人!");  
+			  }
+			});
+		  
+	  });
+	     
+   });
+</script>
+</head>
+<body>
+  编号:<input type="text" name="user_id" id="user_id" ><br><br>
+  
+  <div id="content">
+       
+  </div> 
+</body>
+</html>
