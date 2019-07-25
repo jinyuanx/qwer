@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/jquery-2.1.0.min.js"></script>
+		<script src="js/jquery.validate.min.js"></script>
+		<script src="js/messages_zh.js"></script>
+		
+		<script>
+			$(function(){
+				$("#checkForm").validate({
+					
+					rules:{
+						username:{
+							required:true,
+							minlength:6
+							
+						},
+						password:{
+							required:true,
+							minlength:6
+							
+						},
+						repassword:{
+							required:true,
+							minlength:6,
+							equalTo:"[name='password']"
+						}
+						
+					},
+					
+					messages:{
+						
+						username:{
+							required:"用户名不能为空",
+							minlength:"用户名不少于6位！"
+							
+						},
+						password:{
+							required:"密码不能为空",
+							minlength:"密码不少于6位"
+							
+						},
+						
+						repassword:{
+							required:true,
+							minlength:6,
+							equalTo:"两次输入密码不一致!"
+						}
+						
+					}
+					
+					
+					
+				});
+				
+				
+			});
+			
+			
+		</script>
+	</head>
+	<body>
+		<center>
+		<h1>登陆验证</h1>	
+			<form action="b.html" id="checkForm">
+			用户名：<input type="text" name="username" /><br /><br />
+			密码：<input type="password" name="password"/><br /><br />
+			确认密码：<input type="password" name="repassword"/><br /><br />
+			<input type="submit"/>
+			
+		</form>
+		</center>
+	</body>
+</html>
