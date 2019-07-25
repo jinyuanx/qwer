@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户管理</title>
+        <link rel="stylesheet" href="js/jquery-easyui-1.4.2/themes/default/easyui.css" />
+		<link rel="stylesheet" href="js/jquery-easyui-1.4.2/themes/icon.css" />
+		<script src="js/jquery-easyui-1.4.2/jquery.min.js" charset="UTF-8"></script>
+		<script src="js/jquery-easyui-1.4.2/jquery.easyui.min.js" charset="UTF-8"></script>
+		<script src="js/jquery-easyui-1.4.2/locale/easyui-lang-zh_CN.js" charset="UTF-8"></script>
+		<script>
+		
+		var url;
+			$(function() {
+			/*    $("#dg").datagrid({
+				   
+				   rowStyler: function(index,row){
+						if (row.user_age < 15){
+							return 'background-color:black;color:#fff;font-weight:bold;';
+						}
+					}
+				   
+			   }); */
+
+			});
+			/**模糊查询
+			   重新发起异步请求，查询数据库， 重新加载datagrid
+			*/
+			function searchUser(){
+				$('#dg').datagrid('load',{
+					user_name:$("#user_name").val(),
+					user_age:$('#user_age').val()
+				});
+			}
+			/* 单击添加按钮，出现用户窗口
+			*/
+			function openUserAddDialog(){
+				$("#dlg").dialog("open").dialog("setTitle","添加用户信息");
+				url="user.do?opt=add";
+				
+			}
+			/*单击关闭按钮，出现用户窗口
+			*/
+			function closeUserAddDialog(){
+				$("#dlg").dialog("close");
+				$("#fm").form('clear');
+			}
+			/*
+			    实现保存发起异步请求，请求数据到后台
+			*/
+			function saveUser(){
+				$("#fm").form("submit",{
+					url:url,
+					onSubmit:function(){
+						return $(this).form("validate");//提交之前进行校验
+					},
+					success:function(result){
+						var result=eval('('+result+')');
+						if(result.errorMsg){
+							$.messager.alert('系统提示',"<font color=red>"+result.errorMsg+"</font>");
+							return;
+						}else{
+							$.messager.alert('系统提示','保存成功');
+							closeUserAddDialog();
+							$("#dg").datagrid("reload");
+						}
+					}
+				});
+				
+			}
+		
+			/*
+			    修改功能
+			*/
+			function openUserModifyDialog(){
+				
+				//获取选中要修改的datagrid行
+				var selectedRows=$("#dg").datagrid('getSelections');
+				if(selectedRows.length!=1){
+					$.messager.alert('系统提示','请选择一条要编辑的数据！');
+					return;
+				}
+				//获取行的索引
+				var row=selectedRows[0];
+				$("#dlg").dialog("open").dialog("setTitle","修改用户信息");
+				//把选中的行的信息值，直接赋值给对话框的form中
+				$("#fm").form("load",row);
+				url="user.do?opt=upd&user_id="+row.user_id;
+			}
+			/*
+			删除功能
+			*/
+			function deleteUser(){
+				//获取选中要修改的datagrid行
+				var selectedRows = $("#dg").datagrid('getSelections');
+				if(selectedRows.length==0){
+					$.messager.alert('系统提示','请选择要删除的数据！');
+					return;
+				}
+				//实现删除多条记录
+				var strIds=[];
+				for(var i=0;i<selectedRows.length;i++){
+					strIds.push(selectedRows[i].user_id);
+					
+				}
+				var ids=strIds.join(",");
+				
+			
+				$.messager.confirm("系统提示","您确认要删除这<font color=red>"+selectedRows.length+"</font>条数据吗？",function(r){
+					if(r){
+						//发起异步请求
+						$.post("user.do?opt=del",{delIds:ids},function(result){
+							if(result.success){
+								$.messager.alert('系统提示',"您已成功删除<font color=red>"+result.delNums+"</font>条数据！");
+								$("#dg").datagrid("reload");
+							}else{
+								$.messager.alert('系统提示',result.errorMsg);
+							}
+						},"json");
+					}
+				});
+			}
+		</script>
+<body style="margin: 1px;">
+<!-- 查询所有datagrid -->
+<table id="dg" title="用户管理" class="easyui-datagrid" fitColumns="true" 
+    pagination="true" rownumbers="true" url="user.do?opt=queryAll" fit="true" toolbar="#tb" >
+    <thead>
+    	<tr>
+    		<th field="cb" checkbox="true" align="center"></th>
+    		<th field="user_id" width="100" align="center">编号</th>
+    		<th field="user_name" width="100" align="center">用户名</th>
+    		<th field="user_age" width="100" align="center">用户年龄</th>
+    		<th field="user_weight" width="100" align="center" >用户体重</th>
+    		<!-- <th field="user_weight" width="100" align="center" hidden="true">用户体重</th> -->
+    		
+    	</tr>
+    </thead>
+</table>
+<!-- 查询所有工具栏以及模糊查询 -->
+<div id="tb">
+	<div>
+		<a href="javascript:openUserAddDialog()" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+		<a href="javascript:openUserModifyDialog()" class="easyui-linkbutton" iconCls="icon-edit" plain="true">修改</a>
+		<a href="javascript:deleteUser()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
+	</div>
+	 <div>
+		&nbsp;用户名：&nbsp;<input type="text" name="user_name" id="user_name" size="20" onkeydown="if(event.keyCode==13) searchUser()"/>
+		&nbsp;用户年龄：&nbsp;<input type="text" name="user_age" id="user_age" size="20" onkeydown="if(event.keyCode==13) searchUser()"/>
+		<!-- &nbsp;角色：&nbsp;<input class="easyui-combobox" id="s_roleId" name="s_roleId" size="20" data-options="editable:false,panelHeight:'auto',valueField:'roleId',textField:'roleName',url:'role?action=comBoList'"/> -->
+		<a href="javascript:searchUser()" class="easyui-linkbutton" iconCls="icon-search" plain="true">搜索</a>
+	</div> 
+</div>
+
+<!-- 添加功能对话框,修改功能对话框 -->
+<div id="dlg" class="easyui-dialog" style="width: 470px;height: 250px;padding: 10px 20px"
+  closed="true" buttons="#dlg-buttons">
+  <form id="fm" method="post">
+  	<table cellspacing="5px;">
+  		<tr>
+  			<td>用户名：</td>
+  			<td><input type="text" id="user_name" name="user_name" class="easyui-validatebox" required="true"/></td>
+  			</tr>
+  			<tr>
+  			
+  			<td>用户年龄：</td>
+  			<td><input type="text" id="user_age" name="user_age" class="easyui-validatebox" required="true"/></td>
+  			</tr>
+  			<tr>
+  			<td>用户体重：</td>
+  			<td><input type="text" id="user_weight" name="user_weight" class="easyui-validatebox" required="true"/></td>
+  		</tr>
+  		
+  		
+  		<!-- <tr>
+  			<td>角色名称：</td>
+  			<td><input type="hidden" id="roleId" name="roleId" /><input type="text" id="roleName" name="roleName" readonly="readonly" class="easyui-validatebox" required="true"/></td>
+  			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  			<td colspan="2"><a href="javascript:openRoleChooseDialog()" class="easyui-linkbutton" >选择角色</a></td>
+  		</tr>
+  		<tr>
+  			<td valign="top">备注：</td>
+  			<td colspan="4">
+  				<textarea rows="7" cols="50" name="userDescription" id="userDescription"></textarea>
+  			</td>
+  		</tr> -->
+  	</table>
+  </form>
+</div>
+<!-- 添加功能对话框 的保存和关闭-->
+<div id="dlg-buttons">
+	<a href="javascript:saveUser()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
+	<a href="javascript:closeUserAddDialog()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
+</div>
+
+</body>
+</html>
