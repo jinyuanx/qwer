@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript" src="js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="js/messages_zh.js"></script>
+  <script>
+  $(function(){
+	  //  alert("111");
+	  //发起异步请求
+	  
+	    $.ajax({
+		   type: "POST",//提交方式，get
+		   url: "some.php",//请求的url user.do
+		   data: "name=John&location=Boston",//前端给后台传送的数据
+		   async:true,//异步
+		   cache:false,//不缓存
+		   success: function(msg){//回调函数
+		     alert( "Data Saved: " + msg );
+		   }
+		});
+	  
+	  
+	  /*  $.ajax({
+		   url:"user.do",
+		   type:"post",
+		   data:"user_id=xxx",
+		   dataType:"text",
+		   cache:false,
+		   async:true,
+		   success:function(msg){
+			   alert( "Data Saved: " + msg );
+
+			   
+		   }
+		   
+		   
+		   
+	   }); */
+	  
+	  
+  });
+  </script>
+</head>
+<body>
+
+</body>
+</html>

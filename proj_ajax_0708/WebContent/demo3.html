@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+var xhr ;
+
+function createXHR(){
+   //  a.创建XMLHttpRequest对象
+	  // ie,fx
+	  
+	  if(window.ActiveXObject){
+		  
+		  xhr = new ActiveXObject("Microsoft.XMLHTTP");
+		  
+	  }else if(window.XMLHttpRequest){
+		  
+		  xhr = new  XMLHttpRequest();
+	  } 
+	
+}
+  function vali(){
+	  
+	  createXHR();
+	
+	  
+      //  b.构建异步请求
+      var url = "user.do";
+      var params="opt=findById&user_id="+document.getElementById("user_id").value+"&t="+Math.random();
+      xhr.open("post",url,true);
+      //添加响应头
+      xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+
+      // c.设置回调@@@@
+      xhr.onreadystatechange=info;
+      //  d.发起异步请求
+      xhr.send(params);
+         
+  }
+  //  e.回调处理    
+  function info(){
+	
+	  if(xhr.readyState==4&&xhr.status==200){
+		 
+		 var flag = xhr.responseText;
+		
+		  if(flag=="1"){
+			  alert("可用");
+		  }else{
+			  alert("不可用");
+		  }
+	  }
+	  
+  }
+</script>
+</head>
+<body>
+
+账户名:<input type="text" id="user_id" name="user_id">
+
+<input type="button" value="验证" onclick="vali()">
+</body>
+</html>

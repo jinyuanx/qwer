@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+var xhr ;
+
+function createXHR(){
+	
+	 // a.创建XMLHttpRequest对象
+	 
+	
+	 
+	 if (window.XMLHttpRequest){
+		 // code for IE7+, Firefox, Chrome, Opera, Safari
+
+		 xhr = new XMLHttpRequest();
+		 
+	 }else{
+		 //{// code for IE6, IE5
+
+		 xhr = new  ActiveXObject("Microsoft.XMLHTTP");
+
+		 
+	 }
+	
+}
+  function vali(){
+	  // a.创建XMLHttpRequest对象
+	  createXHR();
+		 
+		// alert("000");
+
+	 //使用 XMLHttpRequest 对象的 open() 和 send() 方法：
+     // b.构建异步请求
+	 xhr.open("get","user.do?opt=findById&user_id="+document.getElementById("user_id").value+"&t="+Math.random(),true);
+   //onreadystatechange 存储函数（或函数名），每当 readyState 属性改变时，就会调用该函数。 
+     // c.设置回调@@@@
+     xhr.onreadystatechange=info;
+     
+     // d.发起异步请求
+     
+     xhr.send(null);
+    
+	  
+  }
+  // e.回调处理       
+  function info(){
+	  /*
+	  readyState 存有 XMLHttpRequest 的状态。从 0 到 4 发生变化。
+
+0: 请求未初始化 
+1: 服务器连接已建立 
+2: 请求已接收 
+3: 请求处理中 
+4: 请求已完成，且响应已就绪  
+
+
+status 200: "OK"
+	404: 未找到页面 
+	  */
+	  
+	  if(xhr.readyState==4 && xhr.status==200){
+		  ////接受服务端响应信息
+		    var flag = xhr.responseText;
+		//  alert(flag);
+		    //根据服务器端的响应信息给出对应的提示。
+		    
+		    if(flag==1){
+		    	alert("可用");
+		    }else{
+		    	alert("不可用");
+		    
+		    	}
+		    
+		    
+	  
+	      }
+	  }
+  
+  
+</script>
+</head>
+<body>
+
+账户名:<input type="text" id="user_id" name="user_id">
+
+<input type="button" value="验证" onclick="vali()">
+</body>
+</html>
